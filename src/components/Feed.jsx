@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Login() {
+function Feed() {
   return (
     <div>
-      login page
+      Feed page is there 
     </div>
   )
 }
 
-export default Login
+export default Feed
