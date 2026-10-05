@@ -1,13 +1,26 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequests } from "../utils/requestSlice";
+import { addRequests, removeRequests } from "../utils/requestSlice";
+
 
 function Requests() {
-  const requests = useSelector((store) => store.requests);
 
+  const requests = useSelector((store) => store.requests);
   const dispatch = useDispatch();
+  const [showButtons,setShowButtons]= useState(false);
+
+  const reviewRequest = async (status, _id) => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/request/review/" + status + "/" + _id,
+        {},
+        { withCredentials: true },
+        dispatch(removeRequests(_id))
+      );
+    } catch (err) {}
+  };
 
   const fetchRequests = async () => {
     try {
@@ -24,18 +37,19 @@ function Requests() {
   }, []);
   if (!requests) return;
   if (requests.length === 0) {
-    return <div>No Requests found</div>;
+    return <div className="text-center font-bold text-2xl mt-60">No Requests found</div>;
   }
   return (
     <div className=" flex flex-col items-center my-10 jus">
       <h1 className="font-bold text-3xl">Connection Requests</h1>
       {requests.map((request) => {
-        const { _id,firstName, lastName, photoUrl, about, age, gender } =
+        const { _id, firstName, lastName, photoUrl, about, age, gender } =
           request.fromUserId;
         return (
-          <div 
-          key={_id}
-          className="flex border border-white m-4 p-4 rounded-md bg-base-300 px-4 w-1/2 mt-10">
+          <div
+            key={_id}
+            className="flex border border-white m-4 p-4 rounded-md bg-base-300 px-4 w-1/2 mt-10"
+          >
             <div>
               <img
                 className="w-20 h-20 p-1 rounded-full"
@@ -50,9 +64,19 @@ function Requests() {
               {age && gender && <p>{age + " , " + gender}</p>}
               <h2>{about}</h2>
             </div>
-             <div className="ml-70 mt-4">
-              <button className="btn btn-primary mx-2.5">Reject</button>
-              <button className="btn btn-secondary mx-2.5">Accept</button>
+            <div className="ml-70 mt-4">
+              <button
+                onClick={() => reviewRequest("rejected", request._id)}
+                className="btn btn-primary mx-2.5"
+              >
+                Reject
+              </button>
+              <button
+                onClick={() => reviewRequest("accepted", request._id)}
+                className="btn btn-secondary mx-2.5"
+              >
+                Accept
+              </button>
             </div>
           </div>
         );
