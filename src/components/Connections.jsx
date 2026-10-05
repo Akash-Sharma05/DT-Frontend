@@ -30,9 +30,13 @@ function Connections() {
     <div className=" flex flex-col items-center my-10 jus">
       <h1 className="font-bold text-3xl">Connections</h1>
       {connections.map((connection) => {
-        const { firstName, lastName, photoUrl, about ,age,gender} = connection;
+        const { _id, firstName, lastName, photoUrl, about, age, gender } =
+          connection;
         return (
-          <div className="flex border border-white m-4 p-4 rounded-md bg-base-300 px-4 w-1/2 mt-10">
+          <div
+            key={_id}
+            className="flex border border-white m-4 p-4 rounded-md bg-base-300 px-4 w-1/2 mt-10"
+          >
             <div>
               <img
                 className="w-20 h-20 p-1 rounded-full"
@@ -41,10 +45,13 @@ function Connections() {
               />
             </div>
             <div className="text-left ml-4 mt-1">
-              <h2 className="font-bold text-xl">{firstName + " " + lastName}</h2>
-              <p>{age + " , " + gender}</p>
+              <h2 className="font-bold text-xl">
+                {firstName + " " + lastName}
+              </h2>
+              {age && gender && <p>{age + " , " + gender}</p>}
               <h2>{about}</h2>
             </div>
+           
           </div>
         );
       })}
